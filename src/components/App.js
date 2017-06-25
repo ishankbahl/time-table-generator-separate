@@ -1,13 +1,13 @@
 import React from "react";
 import InputBox from "./InputBox";
 import base from "../base";
+import RenderData from "./RenderData";
 
 class App extends React.Component{
   constructor(){
     super();
     this.addTeacher=this.addTeacher.bind(this);
     this.addRoom=this.addRoom.bind(this);
-    this.renderData=this.renderData.bind(this);
     this.renderLi=this.renderLi.bind(this);
     this.removeData=this.removeData.bind(this);
     this.removeRoom=this.removeRoom.bind(this);
@@ -28,19 +28,6 @@ class App extends React.Component{
     const rooms={...this.state.rooms};
     rooms[`room-${Date.now()}`]=data;
     this.setState({rooms});
-  }
-
-  renderData(key){
-    let data;
-    const value=this.props.params.data;
-    if (value==="teachers")
-      data=this.state.teachers[key];
-    else
-      data=this.state.rooms[key];
-    const removeButton=<button onClick={()=>this.removeData(key)}>&times;</button>;
-    return (
-      <li key={key}>{data.name}<span>{removeButton}</span></li>
-    );
   }
 
   removeData(key){
@@ -94,9 +81,9 @@ class App extends React.Component{
   renderLi(){
     const data=this.props.params.data;
     if(data==="teachers")
-       return Object.keys(this.state.teachers).map(key=>this.renderData(key));
+       return Object.keys(this.state.teachers).map(key=><RenderData data={this.props.params.data} key={key} index={key} state={this.state} removeData={this.removeData} />);
     else
-      return Object.keys(this.state.rooms).map(key=>this.renderData(key));
+      return Object.keys(this.state.rooms).map(key=><RenderData data={this.props.params.data} key={key} index={key} state={this.state} removeData={this.removeData} />);
   }
 
   render(){
