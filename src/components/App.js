@@ -1,5 +1,6 @@
 import React from "react";
 import InputBox from "./InputBox";
+import base from "../base";
 
 class App extends React.Component{
   constructor(){
@@ -51,13 +52,13 @@ class App extends React.Component{
 
   removeTeacher(key){
     const teachers={...this.state.teachers};
-    delete teachers[key];
+    teachers[key]=null;
     this.setState({teachers});
   }
 
   removeRoom(key){
     const rooms={...this.state.rooms};
-    delete rooms[key];
+    rooms[key]=null;
     this.setState({rooms});
   }
 
@@ -66,6 +67,16 @@ class App extends React.Component{
   }
 
   componentWillMount(){
+    this.ref1=base.syncState("teachers",{
+      context:this,
+      state:"teachers"
+    });
+
+    this.ref2=base.syncState("rooms",{
+      context:this,
+      state:"rooms"
+    });
+
     const localStorageRef=localStorage.getItem("data");
     if(localStorageRef){
       this.setState({
@@ -73,6 +84,11 @@ class App extends React.Component{
         rooms:JSON.parse(localStorageRef).rooms
       });
     }
+  }
+
+  componentWillUnmount(){
+    base.removeBinding(this.ref1.endpoint);
+    base.removeBinding(this.ref2.endpoint);
   }
 
   renderLi(){
